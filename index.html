@@ -8,9 +8,18 @@
       $(document).ready(() => {
         const connection = new signalR.HubConnectionBuilder()
           .withUrl("https://localhost:7003/myhub")
+          .withAutomaticReconnect([1000, 1000, 2000, 3000, 5000, 10000]) // 0,2,10,30 saniye default aralıklarıyla dener. Bağlantı var ancak koptuğu durumlarda kullaınır.
           .build();
 
-        connection.start();
+        //Bağlantı hiç kurulmadığı durumlarda bu fonksiyon kyllanılır.
+        async function start() {
+          try {
+            await connection.start();
+          } catch (error) {
+            setTimeout(() => start(), 2000);
+          }
+        }
+
         $("#btnGonder").click(() => {
           let message = $("#txtMessage").val();
           connection
