@@ -8,7 +8,7 @@
       $(document).ready(() => {
         const connection = new signalR.HubConnectionBuilder()
           .withUrl("https://localhost:7003/myhub")
-          .withAutomaticReconnect([1000, 1000, 2000, 3000, 5000, 10000]) // 0,2,10,30 saniye default aralıklarıyla dener. Bağlantı var ancak koptuğu durumlarda kullaınır.
+          .withAutomaticReconnect([1000, 1000, 2000]) // 0,2,10,30 saniye default aralıklarıyla dener. Bağlantı var ancak koptuğu durumlarda kullaınır.
           .build();
 
         //Bağlantı hiç kurulmadığı durumlarda bu fonksiyon kyllanılır.
@@ -20,6 +20,42 @@
           }
         }
 
+        start();
+
+        const durum = $("#durum");
+        connection.onreconnecting((error) => {
+          durum.css("background-color", "blue");
+          durum.css("color", "white");
+          durum.html("Bağlantı kuruluyor...");
+          durum.fadeIn(2000, () => {
+            setTimeout(() => {
+              durum.fadeOut(2000);
+            }, 2000);
+          });
+        });
+
+        connection.onreconnected((connectionId) => {
+          durum.css("background-color", "green");
+          durum.css("color", "white");
+          durum.html("Bağlantı kuruldu...");
+          durum.fadeIn(2000, () => {
+            setTimeout(() => {
+              durum.fadeOut(2000);
+            }, 2000);
+          });
+        });
+
+        connection.onclose((connectionId) => {
+          durum.css("background-color", "red");
+          durum.css("color", "white");
+          durum.html("Bağlanılamadı...");
+          durum.fadeIn(2000, () => {
+            setTimeout(() => {
+              durum.fadeOut(2000);
+            }, 2000);
+          });
+        });
+
         $("#btnGonder").click(() => {
           let message = $("#txtMessage").val();
           connection
@@ -30,15 +66,20 @@
         });
 
         connection.on("receiveMessage", (data) => {
-          $("div").append(data + "<br>");
+          $("#mesajlar").append(data + "<br>");
         });
       });
     </script>
   </head>
   <body>
+    <div id="durum" style="display: none"></div>
     <input type="text" id="txtMessage" />
     <button id="btnGonder">Gönder</button>
 
-    <div></div>
+    <div id="mesajlar"></div>
   </body>
 </html>
+// onReconenctiong : Yeniden bağlanma girişimlerini başaltmadan önce
+fırlatılan/tetiklenen eventtir. // onReconencted: Yeniden bağlantı
+gerçekleştiğinde tetiklenen fonksiyondur. // onClose : Yeniden bağlantı
+girişimlerinin sonuçsuz kaldığı durumlarda kullanılır.
