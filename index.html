@@ -22,38 +22,34 @@
 
         start();
 
-        const durum = $("#durum");
-        connection.onreconnecting((error) => {
-          durum.css("background-color", "blue");
-          durum.css("color", "white");
-          durum.html("Bağlantı kuruluyor...");
+        function animation() {
           durum.fadeIn(2000, () => {
             setTimeout(() => {
               durum.fadeOut(2000);
             }, 2000);
           });
+        }
+
+        const durum = $("#durum");
+        connection.onreconnecting((error) => {
+          durum.css("background-color", "blue");
+          durum.css("color", "white");
+          durum.html("Bağlantı kuruluyor...");
+          animation();
         });
 
         connection.onreconnected((connectionId) => {
           durum.css("background-color", "green");
           durum.css("color", "white");
           durum.html("Bağlantı kuruldu...");
-          durum.fadeIn(2000, () => {
-            setTimeout(() => {
-              durum.fadeOut(2000);
-            }, 2000);
-          });
+          animation();
         });
 
         connection.onclose((connectionId) => {
           durum.css("background-color", "red");
           durum.css("color", "white");
           durum.html("Bağlanılamadı...");
-          durum.fadeIn(2000, () => {
-            setTimeout(() => {
-              durum.fadeOut(2000);
-            }, 2000);
-          });
+          animation();
         });
 
         $("#btnGonder").click(() => {
@@ -68,6 +64,26 @@
         connection.on("receiveMessage", (data) => {
           $("#mesajlar").append(data + "<br>");
         });
+
+        connection.on("userJoined", (connectionId) => {
+          durum.html(`${connectionId} sisteme bağlandı.`);
+          durum.css("color", "green");
+          animation();
+        });
+
+        connection.on("userLeft", (connectionId) => {
+          durum.html(`${connectionId} sistemden ayrıldı.`);
+          durum.css("color", "red");
+          animation();
+        });
+
+        connection.on("clients", (clientsData) => {
+          let text = "";
+          $.each(clientsData, (index, item) => {
+            text += `<li>${item}</li>`;
+          });
+          $("#clients").html(text);
+        });
       });
     </script>
   </head>
@@ -77,9 +93,17 @@
     <button id="btnGonder">Gönder</button>
 
     <div id="mesajlar"></div>
+    <div>
+      <ul id="clients"></ul>
+    </div>
   </body>
 </html>
-// onReconenctiong : Yeniden bağlanma girişimlerini başaltmadan önce
-fırlatılan/tetiklenen eventtir. // onReconencted: Yeniden bağlantı
-gerçekleştiğinde tetiklenen fonksiyondur. // onClose : Yeniden bağlantı
+//
+<!--
+  onReconenctiong : Yeniden bağlanma girişimlerini başaltmadan önce
+fırlatılan/tetiklenen eventtir.
+  onReconencted: Yeniden bağlantı
+gerçekleştiğinde tetiklenen fonksiyondur.
+  onClose : Yeniden bağlantı
 girişimlerinin sonuçsuz kaldığı durumlarda kullanılır.
+ -->

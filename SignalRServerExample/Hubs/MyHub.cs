@@ -4,19 +4,26 @@ namespace SignalRServerExample.Hubs
 {
     public class MyHub : Hub
     {
+
+        static List<string> clients = new();
+
         public async Task SendMessageAsync(string message)
         {
             await Clients.All.SendAsync("receiveMessage", message); //Client'ta receiveMessage isimli fonksiyonu tetikle, parametre olarak message'ı al.
         }
 
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
-            return base.OnConnectedAsync();
+            clients.Add(Context.ConnectionId);
+            await Clients.All.SendAsync("clients", clients);
+            await Clients.All.SendAsync("userJoined", Context.ConnectionId);
         }
 
-        public override Task OnDisconnectedAsync(Exception? exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            return base.OnDisconnectedAsync(exception);
+            clients.Remove(Context.ConnectionId);
+            await Clients.All.SendAsync("clients", clients);
+            await Clients.All.SendAsync("userLeft", Context.ConnectionId);
         }
     }
 }
