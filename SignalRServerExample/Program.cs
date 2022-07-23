@@ -17,6 +17,7 @@ var app = builder.Build();
 app.UseCors();
 app.MapGet("/", () => "Hello World!");
 app.MapHub<MyHub>("/myhub");
+app.MapHub<MessageHub>("/messagehub");
 app.MapControllers();
 
 app.Run();

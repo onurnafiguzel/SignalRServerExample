@@ -7,7 +7,7 @@
     <script>
       $(document).ready(() => {
         const connection = new signalR.HubConnectionBuilder()
-          .withUrl("https://localhost:7003/myhub")
+          .withUrl("https://localhost:7003/messagehub")
           .withAutomaticReconnect([1000, 1000, 2000]) // 0,2,10,30 saniye default aralıklarıyla dener. Bağlantı var ancak koptuğu durumlarda kullaınır.
           .build();
 
@@ -64,26 +64,6 @@
         connection.on("receiveMessage", (data) => {
           $("#mesajlar").append(data + "<br>");
         });
-
-        connection.on("userJoined", (connectionId) => {
-          durum.html(`${connectionId} sisteme bağlandı.`);
-          durum.css("color", "green");
-          animation();
-        });
-
-        connection.on("userLeft", (connectionId) => {
-          durum.html(`${connectionId} sistemden ayrıldı.`);
-          durum.css("color", "red");
-          animation();
-        });
-
-        connection.on("clients", (clientsData) => {
-          let text = "";
-          $.each(clientsData, (index, item) => {
-            text += `<li>${item}</li>`;
-          });
-          $("#clients").html(text);
-        });
       });
     </script>
   </head>
@@ -93,9 +73,6 @@
     <button id="btnGonder">Gönder</button>
 
     <div id="mesajlar"></div>
-    <div>
-      <ul id="clients"></ul>
-    </div>
   </body>
 </html>
 <!--
