@@ -64,10 +64,15 @@
         connection.on("receiveMessage", (data) => {
           $("#mesajlar").append(data + "<br>");
         });
+
+        connection.on("getConnectionId", (connectionId) => {
+          $("#connectionId").html(`ConnectionId : ${connectionId}`);
+        });
       });
     </script>
   </head>
   <body>
+    <div style="background-color: black; color: white" id="connectionId"></div>
     <div id="durum" style="display: none"></div>
     <input type="text" id="txtMessage" />
     <button id="btnGonder">Gönder</button>
