@@ -4,7 +4,8 @@ namespace SignalRServerExample.Hubs
 {
     public class MessageHub : Hub
     {
-        public async Task SendMessageAsync(string message, IEnumerable<string> connectionIds)
+        //public async Task SendMessageAsync(string message, IEnumerable<string> connectionIds)
+        public async Task SendMessageAsync(string message, string groupName)
         {
             #region Caller
             // Sadece server'a bildirim gönderen client ile iletişim kurar.
@@ -32,7 +33,12 @@ namespace SignalRServerExample.Hubs
             #endregion
             #region Clients
             // Servera bağlı olan clientlara bildirir. AllExcept'in tersidir.
-            await Clients.Clients(connectionIds).SendAsync("receiveMessage", message);
+            //await Clients.Clients(connectionIds).SendAsync("receiveMessage", message);
+            #endregion
+            #region Group
+            // Belirtilen gruptaki tüm clientlara bildiride bulunur.
+            // Önce gruplar oluşturulmalı ve ardından clientlar gruplara subscribe olmalı.
+            await Clients.Group(groupName).SendAsync("receiveMessage", message);
             #endregion
             #endregion
         }
@@ -40,6 +46,11 @@ namespace SignalRServerExample.Hubs
         public override async Task OnConnectedAsync()
         {
             await Clients.Caller.SendAsync("getConnectionId", Context.ConnectionId);
+        }
+
+        public async Task addGroup(string connectionId, string groupName)
+        {
+            await Groups.AddToGroupAsync(connectionId, groupName);
         }
     }
 }

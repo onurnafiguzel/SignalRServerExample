@@ -56,28 +56,49 @@
           let message = $("#txtMessage").val();
           let connectionIds = $("#connectionIds").val().split(",");
           connection
-            .invoke("SendMessageAsync", message, connectionIds)
-            .catch((error) =>
-              console.log(`Mesaj gönderilirken hata oluştu. ${error}`)
-            );
+            //.invoke("SendMessageAsync", message, connectionIds).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
+            .invoke("SendMessageAsync", message, $("input[name=grup]:checked").val()).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
         });
 
         connection.on("receiveMessage", (data) => {
           $("#mesajlar").append(data + "<br>");
         });
 
+        let _connectionId = "";
         connection.on("getConnectionId", (connectionId) => {
+          _connectionId = connectionId;
           $("#connectionId").html(`ConnectionId : ${connectionId}`);
+        });
+
+        $("#btnGrubaGir").click(() => {
+          let groupName = $("input[name=grup]:checked").val();
+          connection
+            .invoke("addGroup", _connectionId, groupName)
+            .catch((error) =>
+              console.log(`Mesaj gönderilirken hata oluştu. ${error}`)
+            );
         });
       });
     </script>
   </head>
   <body>
     <div style="background-color: black; color: white" id="connectionId"></div>
+
+    <input type="radio" name="grup" value="A" /> A
+    <input type="radio" name="grup" value="B" /> B
+    <input type="radio" name="grup" value="C" /> C
+    <button id="btnGrubaGir">Gruba gir</button>
+    <br />
+
     <div id="durum" style="display: none"></div>
     <input type="text" id="txtMessage" placeholder="mesaj" />
-    <br>
-    <textarea id="connectionIds" cols="30" rows="10" placeholder="connectionId"></textarea>
+    <br />
+    <textarea
+      id="connectionIds"
+      cols="30"
+      rows="10"
+      placeholder="connectionId"
+    ></textarea>
     <button id="btnGonder">Gönder</button>
 
     <div id="mesajlar"></div>
