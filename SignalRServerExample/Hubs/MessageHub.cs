@@ -28,7 +28,11 @@ namespace SignalRServerExample.Hubs
             #endregion
             #region Client
             // Belli bir clienta bildiri.
-            await Clients.Client(connectionIds.First()).SendAsync("receiveMessage", message);
+            //await Clients.Client(connectionIds.First()).SendAsync("receiveMessage", message);
+            #endregion
+            #region Clients
+            // Servera bağlı olan clientlara bildirir. AllExcept'in tersidir.
+            await Clients.Clients(connectionIds).SendAsync("receiveMessage", message);
             #endregion
             #endregion
         }
