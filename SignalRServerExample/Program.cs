@@ -11,10 +11,12 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 ));
 builder.Services.AddTransient<MyBusiness>();
 builder.Services.AddSignalR();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 app.UseCors();
 app.MapGet("/", () => "Hello World!");
 app.MapHub<MyHub>("/myhub");
+app.MapControllers();
 
 app.Run();
