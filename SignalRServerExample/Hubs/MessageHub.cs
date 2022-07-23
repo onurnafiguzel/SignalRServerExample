@@ -24,14 +24,18 @@ namespace SignalRServerExample.Hubs
             #region Hub Clients Metotları
             #region AllExcept
             // Belirtilen clientlar gariç servera bağlı oln tüm clientlara bildiride bulunur.
-            await Clients.AllExcept(connectionIds).SendAsync("receiveMessage", message);
+            //await Clients.AllExcept(connectionIds).SendAsync("receiveMessage", message);
+            #endregion
+            #region Client
+            // Belli bir clienta bildiri.
+            await Clients.Client(connectionIds.First()).SendAsync("receiveMessage", message);
             #endregion
             #endregion
         }
 
         public override async Task OnConnectedAsync()
         {
-            await Clients.Caller.SendAsync("getConnectionId",Context.ConnectionId);
+            await Clients.Caller.SendAsync("getConnectionId", Context.ConnectionId);
         }
     }
 }
