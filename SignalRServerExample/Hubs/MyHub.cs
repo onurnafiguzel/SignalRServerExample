@@ -7,11 +7,6 @@ namespace SignalRServerExample.Hubs
 
         static List<string> clients = new();
 
-        public async Task SendMessageAsync(string message)
-        {
-            await Clients.All.SendAsync("receiveMessage", message); //Client'ta receiveMessage isimli fonksiyonu tetikle, parametre olarak message'ı al.
-        }
-
         public override async Task OnConnectedAsync()
         {
             clients.Add(Context.ConnectionId);
