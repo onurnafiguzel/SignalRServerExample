@@ -54,8 +54,9 @@
 
         $("#btnGonder").click(() => {
           let message = $("#txtMessage").val();
+          let connectionIds = $("#connectionIds").val().split(",");
           connection
-            .invoke("SendMessageAsync", message)
+            .invoke("SendMessageAsync", message, connectionIds)
             .catch((error) =>
               console.log(`Mesaj gönderilirken hata oluştu. ${error}`)
             );
@@ -75,6 +76,7 @@
     <div style="background-color: black; color: white" id="connectionId"></div>
     <div id="durum" style="display: none"></div>
     <input type="text" id="txtMessage" />
+    <textarea id="connectionIds" cols="30" rows="10"></textarea>
     <button id="btnGonder">Gönder</button>
 
     <div id="mesajlar"></div>
