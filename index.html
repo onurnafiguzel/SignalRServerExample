@@ -59,7 +59,7 @@
           connection
             //.invoke("SendMessageAsync", message, connectionIds).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
             //.invoke("SendMessageAsync", message, $("input[name=grup]:checked").val(), connectionIds).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
-            .invoke("SendMessageAsync", message, groups).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
+            .invoke("SendMessageAsync", message, groups[0]).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
         });
 
         connection.on("receiveMessage", (data) => {
