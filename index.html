@@ -55,9 +55,11 @@
         $("#btnGonder").click(() => {
           let message = $("#txtMessage").val();
           let connectionIds = $("#connectionIds").val().split(",");
+          let groups = $("#txtGroups").val().split(",");
           connection
             //.invoke("SendMessageAsync", message, connectionIds).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
-            .invoke("SendMessageAsync", message, $("input[name=grup]:checked").val(), connectionIds).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
+            //.invoke("SendMessageAsync", message, $("input[name=grup]:checked").val(), connectionIds).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
+            .invoke("SendMessageAsync", message, groups).catch((error) =>console.log(`Mesaj gönderilirken hata oluştu. ${error}`));
         });
 
         connection.on("receiveMessage", (data) => {
@@ -91,8 +93,8 @@
     <br />
 
     <div id="durum" style="display: none"></div>
-    <input type="text" id="txtMessage" placeholder="mesaj" />
-    <br />
+    <input type="text" id="txtMessage" placeholder="mesaj" /><br />
+    <input type="text" id="txtGroups" placeholder="Groups" /><br />
     <textarea
       id="connectionIds"
       cols="30"
